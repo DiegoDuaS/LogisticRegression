@@ -1,0 +1,73 @@
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder
+import pandas as pd
+
+def breif_clustering(X, n_clusters):
+
+    X_pca = PCA(n_components=2).fit_transform(X)
+    km = KMeans(n_clusters=n_clusters, random_state=42).fit(X_pca)
+
+    X['Cluster'] = km.fit_predict(X_pca)
+    centroides = km.cluster_centers_
+    sns.scatterplot(x=X_pca[:, 0], y=X_pca[:, 1], hue=X['Cluster'], palette="tab10", legend="full")
+    # Plot centroids
+    plt.scatter(centroides[:, 0], centroides[:, 1], c='red', marker='X', s=200, label="Centroids")
+
+    plt.title(f"K-Means Clustering (Reducido con PCA) - 3 Clusters")
+    plt.legend()
+    plt.show()
+    return X
+
+def drop_many_nulls(df):
+    df = df.copy()  # Evitar modificar el dataframe original
+    
+    # Eliminar las variables que no queremos en el análisis de clusters
+    drop_columns = [
+        'Id', 'PoolArea', 'MiscVal', 'BsmtFinSF2', 'BsmtFinSF1', 'MasVnrArea',
+        'BsmtUnfSF', '2ndFlrSF', 'LowQualFinSF', 'WoodDeckSF', 'OpenPorchSF',
+        'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'Alley', 'ExterCond',
+        'BsmtHalfBath', 'KitchenAbvGr', 'PoolQC', 'Fence', 'MiscFeature', 'MiscFeature',
+        'FireplaceQu', 'MasVnrType', 
+    ]
+    df = df.drop(columns=drop_columns, errors='ignore')
+    
+    return df
+
+from sklearn.preprocessing import LabelEncoder
+import pandas as pd
+
+def trans_categorical(df):
+    # Variables ordinales con asignación de valores
+    ordinal_mappings = {
+        'ExterQual': {'Fa': 1, 'TA': 2, 'Gd': 3, 'Ex': 4},
+        'ExterCond': {'Po': 1, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5},
+        'BsmtQual': {'Fa': 1, 'TA': 2, 'Gd': 3, 'Ex': 4},
+        'HeatingQC': {'Po': 1, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5},
+        'KitchenQual': {'Fa': 1, 'TA': 2, 'Gd': 3, 'Ex': 4},
+        'FireplaceQu': {'Po': 1, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5},
+        'GarageFinish': {'Unf': 1, 'RFn': 2, 'Fin': 3},
+        'PoolQC': {'Fa': 1, 'Gd': 2, 'Ex': 3},
+        'Fence': {'MnWw': 1, 'MnPrv': 2, 'GdWo': 3, 'GdPrv': 4}
+    }
+
+    for col, mapping in ordinal_mappings.items():
+        df[col] = df[col].map(mapping).fillna(0)
+
+    # Variables nominales -> Label Encoding (sin One-Hot)
+    nominal_cols = [
+        'Alley', 'LotShape', 'LotConfig', 'Neighborhood', 'BldgType',
+        'HouseStyle', 'RoofStyle', 'Exterior1st', 'Exterior2nd',
+        'MasVnrType', 'Foundation', 'BsmtFinType1', 'GarageType', 'MSZoning', 'Street',
+        'LandContour', 'Utilities', 'LandSlope', 'Condition1', 'Condition2', 'RoofMatl',
+        'BsmtCond', 'BsmtExposure', 'BsmtFinType2', 'Heating', 'Electrical', 'Functional',
+        'SaleCondition', 'SaleType', 'GarageQual', 'GarageCond', 'CentralAir', 'PavedDrive',
+        'MiscFeature'
+    ]
+
+    for col in nominal_cols:
+        df[col] = LabelEncoder().fit_transform(df[col].astype(str))
+
+    return df
