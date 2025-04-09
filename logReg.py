@@ -43,14 +43,10 @@ def trans_categorical(df):
     # Variables ordinales con asignación de valores
     ordinal_mappings = {
         'ExterQual': {'Fa': 1, 'TA': 2, 'Gd': 3, 'Ex': 4},
-        'ExterCond': {'Po': 1, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5},
         'BsmtQual': {'Fa': 1, 'TA': 2, 'Gd': 3, 'Ex': 4},
         'HeatingQC': {'Po': 1, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5},
         'KitchenQual': {'Fa': 1, 'TA': 2, 'Gd': 3, 'Ex': 4},
-        'FireplaceQu': {'Po': 1, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5},
         'GarageFinish': {'Unf': 1, 'RFn': 2, 'Fin': 3},
-        'PoolQC': {'Fa': 1, 'Gd': 2, 'Ex': 3},
-        'Fence': {'MnWw': 1, 'MnPrv': 2, 'GdWo': 3, 'GdPrv': 4}
     }
 
     for col, mapping in ordinal_mappings.items():
@@ -58,13 +54,12 @@ def trans_categorical(df):
 
     # Variables nominales -> Label Encoding (sin One-Hot)
     nominal_cols = [
-        'Alley', 'LotShape', 'LotConfig', 'Neighborhood', 'BldgType',
+        'LotShape', 'LotConfig', 'Neighborhood', 'BldgType',
         'HouseStyle', 'RoofStyle', 'Exterior1st', 'Exterior2nd',
-        'MasVnrType', 'Foundation', 'BsmtFinType1', 'GarageType', 'MSZoning', 'Street',
+        'Foundation', 'BsmtFinType1', 'GarageType', 'MSZoning', 'Street',
         'LandContour', 'Utilities', 'LandSlope', 'Condition1', 'Condition2', 'RoofMatl',
         'BsmtCond', 'BsmtExposure', 'BsmtFinType2', 'Heating', 'Electrical', 'Functional',
-        'SaleCondition', 'SaleType', 'GarageQual', 'GarageCond', 'CentralAir', 'PavedDrive',
-        'MiscFeature'
+        'SaleCondition', 'SaleType', 'GarageQual', 'GarageCond', 'CentralAir', 'PavedDrive'
     ]
 
     for col in nominal_cols:
