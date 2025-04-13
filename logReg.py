@@ -4,6 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 import pandas as pd
+import numpy as np
 
 def breif_clustering(X, n_clusters):
 
@@ -66,3 +67,17 @@ def trans_categorical(df):
         df[col] = LabelEncoder().fit_transform(df[col].astype(str))
 
     return df
+
+
+def aic_bic(lr_model, X_test, y_test):
+    yproba = lr_model.predict_proba(X_test)[:, 1]
+    log_likelihood = np.sum(y_test * 
+                            np.log(yproba) + (1 - y_test) * 
+                            np.log(1 - yproba))
+    n = X_test.shape[0]  # number of observations
+    k = X_test.shape[1] + 1  # number of parameters (features + intercept)
+
+    aic = 2 * k - 2 * log_likelihood
+    bic = k * np.log(n) - 2 * log_likelihood
+
+    return aic, bic
