@@ -73,6 +73,8 @@ def trans_categorical(df):
 
 def aic_bic(lr_model, X_test, y_test):
     yproba = lr_model.predict_proba(X_test)[:, 1]
+    eps = 1e-15
+    yproba = np.clip(yproba, eps, 1 - eps)
     log_likelihood = np.sum(y_test * 
                             np.log(yproba) + (1 - y_test) * 
                             np.log(1 - yproba))
