@@ -1,7 +1,9 @@
+from sklearn.metrics import accuracy_score
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.preprocessing import LabelEncoder
 import pandas as pd
 import numpy as np
@@ -81,3 +83,14 @@ def aic_bic(lr_model, X_test, y_test):
     bic = k * np.log(n) - 2 * log_likelihood
 
     return aic, bic
+
+def cm_and_metrics(y_test, y_pred, title):
+    print("Precision:", accuracy_score(y_test, y_pred))
+    print(classification_report(y_test,y_pred))
+    # Confusion Matrix
+    cm_custom = confusion_matrix(y_test, y_pred)
+    sns.heatmap(cm_custom, annot=True,cmap='Blues', fmt='d')
+    plt.xlabel("Predicción")
+    plt.ylabel("Real")
+    plt.title(f"Matriz de Confusión Cara o No ({title})")
+    plt.show()
